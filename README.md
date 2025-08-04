@@ -1,4 +1,4 @@
-# Medi-Management-Backend
+# Medi-Backend
 
 :white_check_mark: **Setup Checklist:** 
 - NPM is installed 
@@ -11,6 +11,6 @@
 2. ```git clone <your-clone-link>```
 3. ```cd ./Medi-Backend ```
 4. ```npm install```
-5. ```npm run dev```
+5. ```npm start```
 
 Now open your browser and open ```localhost:8080```
