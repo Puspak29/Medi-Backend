@@ -18,8 +18,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    salt:{
+        type:String,
+    },
     dateofBirth: {
-        type: Date(),
+        type: Date,
     },
     medicalHistory: [{
         condition: {
