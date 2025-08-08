@@ -17,6 +17,9 @@ const doctorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    salt:{
+        type :String,
+    },
     specialization: {
         type: String,
     },
