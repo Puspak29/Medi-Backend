@@ -1,7 +1,7 @@
 const express = require("express");
 const { connectMongo } = require("./connections");
-const { userSignup, userLogin } = require("./controllers/user");
-const { doctorSignup, doctorLogin } = require("./controllers/doctor");
+
+const routes = require("./routers");
 
 require("dotenv").config();
 
@@ -14,15 +14,8 @@ connectMongo(MongoURI);
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.send("Welcome to the SERVER!");
-});
-
-app.post("/api/auth/user/signup", userSignup);
-app.post("/api/auth/user/login", userLogin);
-app.post("/api/auth/doctor/signup", doctorSignup);
-app.post("/api/auth/doctor/login", doctorLogin);
+app.use(routes);
 
 app.listen(PORT, () => {
     console.log(`Server started at http://localhost:${PORT}`);
-})
+});
