@@ -25,24 +25,8 @@ const userSchema = new mongoose.Schema({
         type: Date,
     },
     medicalHistory: [{
-        condition: {
-            type: String,
-        },
-        description: {
-            type: String,
-        },
-        treatment: {
-            type: String,
-        },
-        doctor: {
-            type: String,
-        },
-        date: {
-            type: Date,
-        },
-        supportingDocument: {
-            type: String,
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ReportCard"
     }]
 },
 {
