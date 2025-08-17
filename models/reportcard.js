@@ -20,13 +20,24 @@ const reportCardSchema = new mongoose.Schema({
     },
     date: {
         type: Date,
+        default: Date.now
     },
     supportingDocument: {
         type: String,
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    expiresAt: {
+        type: Date,
+        default: () => Date.now() + 24 * 60 * 60 * 1000
     }
 },{
     timestamps: true
 });
+
+reportCardSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const ReportCard = mongoose.model("ReportCard", reportCardSchema);
 
