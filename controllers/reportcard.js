@@ -30,8 +30,6 @@ async function generateOtp(req, res){
             updateDataId: newReportCard._id
         });
 
-        console.log(`OTP for ${userEmail} is ${generatedOtp}`);
-
         return res.status(200).json({
             success: true,
             message: "otp generated successfully"
@@ -76,7 +74,7 @@ async function verifyOtp(req, res){
             otpRecord.updateDataId,
             {
                 isVerified: true,
-                expiresAt: null
+                $unset: { expiresAt: "" }
             },
             { new: true }
         );
