@@ -31,7 +31,7 @@ async function userSignup(req, res) {
 
         return res.status(500).json({ 
             success: false, 
-            message: "an error occured while creating user" 
+            message: "an error occurred while creating user" 
         });
     }
 }
@@ -70,7 +70,7 @@ async  function userLogin(req, res){
     catch(err){
         return res.status(500).json({ 
             success: false, 
-            message: "an error occured while logging in" 
+            message: "an error occurred while logging in" 
         });
     }
     

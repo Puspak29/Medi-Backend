@@ -31,7 +31,7 @@ async function doctorSignup(req, res) {
 
         return res.status(500).json({ 
             success: false, 
-            message: "an error occured while creating doctor" 
+            message: "an error occurred while creating doctor" 
         });
     }
 }
@@ -70,7 +70,7 @@ async  function doctorLogin(req, res){
     catch(err){
         return res.status(500).json({ 
             success: false, 
-            message: "an error occured while logging in" 
+            message: "an error occurred while logging in" 
         });
     }
 }
