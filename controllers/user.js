@@ -36,7 +36,7 @@ async function userSignup(req, res) {
     }
 }
 
-async  function userLogin(req, res){
+async function userLogin(req, res){
     try{
         const { email, password } = req.body;
         const user = await User.findOne({ email });
@@ -76,4 +76,35 @@ async  function userLogin(req, res){
     
 }
 
-module.exports = { userSignup, userLogin };
+async function userDetails(req, res) {
+    try{
+        const userId = req.params.id;
+        const user = await User.findById(userId)?.populate('medicalHistory');
+
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: "user not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "user found",
+            user: {
+                name: user.name,
+                email: user.email,
+                dateOfBirth: user.dateofBirth ? user.dateofBirth : null,
+                medicalHistory: user.medicalHistory
+            }
+        });
+    }
+    catch(err){
+        return res.status(500).json({ 
+            success: false, 
+            message: "an error occurred while getting user details" 
+        });
+    }
+}
+
+module.exports = { userSignup, userLogin, userDetails };
