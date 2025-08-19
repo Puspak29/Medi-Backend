@@ -79,7 +79,7 @@ async function userLogin(req, res){
 async function userDetails(req, res) {
     try{
         const userId = req.params.id;
-        const user = await User.findById(userId);
+        const user = await User.findById(userId)?.populate('medicalHistory');
 
         if(!user){
             return res.status(404).json({
@@ -88,8 +88,6 @@ async function userDetails(req, res) {
             });
         }
 
-        const populatedUser = await User.findById(user._id).populate('medicalHistory');
-
         return res.status(200).json({
             success: true,
             message: "user found",
@@ -97,7 +95,7 @@ async function userDetails(req, res) {
                 name: user.name,
                 email: user.email,
                 dateOfBirth: user.dateofBirth ? user.dateofBirth : null,
-                medicalHistory: populatedUser.medicalHistory
+                medicalHistory: user.medicalHistory
             }
         });
     }
