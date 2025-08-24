@@ -5,6 +5,11 @@ const doctorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        default: "doctor",
+        immutable: true
+    },
     uidByNMC: {
         type: String,
     },
