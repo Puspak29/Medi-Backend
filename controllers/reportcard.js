@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const User = require("../models/user");
 const ReportCard = require("../models/reportcard");
 const Otp = require("../models/otp");
+const { sendOtpEmail, sendSuccessEmail } = require("../services/emailService");
 
 async function generateOtp(req, res){
     const { userEmail, otpType, description } = req.body;
@@ -29,6 +30,8 @@ async function generateOtp(req, res){
             otpType,
             updateDataId: newReportCard._id
         });
+
+        await sendOtpEmail(userEmail, generatedOtp);
 
         return res.status(200).json({
             success: true,
@@ -79,6 +82,7 @@ async function verifyOtp(req, res){
             { new: true }
         );
 
+        await sendSuccessEmail(userEmail, otpType);
         await Otp.deleteOne({ _id: otpRecord._id });
 
         return res.status(200).json({
