@@ -1,5 +1,6 @@
 const express = require("express");
 const { connectMongo } = require("./connections");
+const cors = require("cors");
 
 const routes = require("./routers");
 
@@ -12,6 +13,7 @@ const MongoURI = process.env.MONGO_URI;
 
 connectMongo(MongoURI);
 
+app.use(cors());
 app.use(express.json());
 
 app.use(routes);
