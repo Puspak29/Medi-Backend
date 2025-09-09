@@ -1,10 +1,10 @@
-const transporter = require("../config/email");
+const transporter = require("../config/gmail");
 
 require("dotenv").config();
 
 async function sendOtpEmail(to, otp){
     const mailOptions = {
-        from: process.env.EMAIL_FROM,
+        from: `"Your OTP" <${process.env.GMAIL_USER}>`,
         to,
         subject: "Your OTP Code",
         text: `Your OTP code is ${otp}. It expires in 5 minutes.`,
@@ -21,10 +21,10 @@ async function sendOtpEmail(to, otp){
 
 async function sendSuccessEmail(to, message){
     const mailOptions = {
-        from: process.env.EMAIL_FROM,
+        from: `"Successful" <${process.env.GMAIL_USER}>`,
         to,
         subject: "Success",
-        text: `${message} successful.`,
+        text: `Your ${message} was successful.`,
     }
 
     try{
