@@ -1,16 +1,19 @@
-const express = require("express");
-const router = express.Router();
+// Importing required modules
+const express = require("express"); // Express framework for building server
+const router = express.Router(); // Creating new router instance
 
-const authRouter = require("./auth");
-const reportCardRouter = require("./reportcard");
-const userRouter = require("./user");
+const authRouter = require("./auth"); // Authentication routes
+const reportCardRouter = require("./reportcard"); // Report card routes
+const userRouter = require("./user"); // User routes
 
+// Root route (GET /)
 router.get("/", (req, res) => {
     res.send("Welcome to the SERVER!");
 });
 
-router.use("/api/auth", authRouter);
-router.use("/api", reportCardRouter);
-router.use("/api", userRouter);
+router.use("/api/auth", authRouter); // Using auth routes for /api/auth
+router.use("/api", reportCardRouter); // Using report card routes for /api
+router.use("/api", userRouter); // Using user routes for /api
 
+// Exporting the router for use in other files
 module.exports = router;

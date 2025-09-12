@@ -1,8 +1,10 @@
-const express = require("express");
-const router = express.Router();
+// Importing required modules
+const express = require("express"); // Express framework for building server
+const router = express.Router(); // Creating new router instance
 
-const { userDetails } = require("../controllers/user");
+const { userDetails } = require("../controllers/user"); // User controller functions
 
-router.get("/user/:id", userDetails);
+router.get("/user/:id", userDetails); // Route to get user details (GET /user/:id)
 
+// Exporting the router for use in other files
 module.exports = router;
