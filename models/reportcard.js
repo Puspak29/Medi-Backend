@@ -1,5 +1,24 @@
 const mongoose = require("mongoose");
 
+/**
+ * ReportCard Schema
+ * 
+ * This schema defines the structure of the ReportCard model in the database.
+ * 
+ * Fields:
+ * - user: Reference to the User model (required).
+ * - doctor: Reference to the Doctor model (required).
+ * - condition: Medical condition of the user (under development).
+ * - description: Description of the medical condition (under development).
+ * - treatment: Treatment prescribed for the condition (under development).
+ * - date: Date of the report card (default: current date).
+ * - supportingDocument: URL or path to any supporting document (under development).
+ * - isVerified: Boolean indicating if the report card is verified through OTP (default: false).
+ * - expiresAt: Date when the report card expires (default: 24 hours from creation).
+ * 
+ * Timestamps: Automatically adds createdAt and updatedAt fields to the document.
+ */
+
 const reportCardSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -37,8 +56,10 @@ const reportCardSchema = new mongoose.Schema({
     timestamps: true
 });
 
+// Index to automatically delete expired report cards
 reportCardSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const ReportCard = mongoose.model("ReportCard", reportCardSchema);
 
+// Exporting the ReportCard model for use in other files
 module.exports = ReportCard;
