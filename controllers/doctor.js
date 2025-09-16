@@ -1,14 +1,23 @@
-const Doctor = require("../models/doctor");
-const { createHmac, randomBytes } = require("crypto");
+// Importing required modules
+const Doctor = require("../models/doctor"); // Doctor model
+const { createHmac, randomBytes } = require("crypto"); // Crypto module for hashing and generating random bytes
 
+/**
+ * Handles doctor signup by creating a new doctor in the database.
+ * The password is hashed with a unique salt before storing.
+ * @param {Object} req - Express request object containing doctor details in body.
+ * @param {Object} res - Express response object for sending responses.
+ * @returns {Object} JSON response for success of failure of doctor signup.
+ */
 async function doctorSignup(req, res) {
     const { name, email, password } = req.body;
-    const salt = randomBytes(16).toString('hex');
-    const hashedPassword = createHmac('sha256', salt)
+    const salt = randomBytes(16).toString('hex'); // Unique salt for hashing
+    const hashedPassword = createHmac('sha256', salt) // Hashing the password with salt
         .update(password)
         .digest('hex');
 
     try{
+        // Attempt to create a new doctor
         await Doctor.create({
             name,
             email,
@@ -18,32 +27,43 @@ async function doctorSignup(req, res) {
 
         return res.status(201).json({ 
             success:true, 
-            message:"doctor created successfully" 
+            message:"Doctor created successfully" 
         });
     }
     catch(err){
+        // Handling duplicate doctor (email) error
         if(err.code === 11000 || (err.code === "MongoError" && err.message.includes('duplicate'))){
             return res.status(400).json({ 
                 success: false, 
-                message: "doctor already exists" 
+                message: "Doctor already exists" 
             });
         }
 
+        // Returning server error for any other errors
         return res.status(500).json({ 
             success: false, 
-            message: "an error occurred while creating doctor" 
+            message: "An error occurred while creating doctor" 
         });
     }
 }
 
-async  function doctorLogin(req, res){
+
+/**
+ * Handles doctor login by verifying email and password.
+ * Verifies the hashed password with the stored hash.
+ * @param {Object} req - Express request object containing doctor login details in body.
+ * @param {Object} res - Express response object for sending responses.
+ * @returns {Object} JSON response for success or failure of doctor login.
+ */
+async function doctorLogin(req, res){
     try{
+        // Attempt to find the doctor by email and verify password
         const { email, password } = req.body;
         const doctor = await Doctor.findOne({ email });
-        if(!doctor) 
+        if(!doctor) // If doctor with given email does not exist
             return res.status(404).json({
                 success: false,
-                message: "doctor not found"
+                message: "Doctor not found"
             });
         const salt = doctor.salt;
         const hashedpassword = doctor.password;
@@ -52,15 +72,15 @@ async  function doctorLogin(req, res){
             .update(password)
             .digest("hex");
 
-        if(hashedpassword !== doctorProvidedHash) 
+        if(hashedpassword !== doctorProvidedHash) // If password does not match
             return res.status(401).json({ 
                 success: false, 
-                message:"password is incorrect"
+                message:"Password is incorrect"
             });
 
         return res.status(200).json({
             success: true, 
-            message: "doctor login successfully", 
+            message: "Doctor login successfully", 
             doctor: {
                 id: doctor._id,
                 email: doctor.email
@@ -68,11 +88,13 @@ async  function doctorLogin(req, res){
         });
     }
     catch(err){
+        // Returning server error for any other errors
         return res.status(500).json({ 
             success: false, 
-            message: "an error occurred while logging in" 
+            message: "An error occurred while logging in" 
         });
     }
 }
 
+// Exporting the doctor signup and login functions for use in other files
 module.exports = { doctorSignup, doctorLogin };
