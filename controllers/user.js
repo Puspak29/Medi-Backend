@@ -1,14 +1,22 @@
 const User = require("../models/user");
 const { createHmac, randomBytes } = require("crypto");
 
+/**
+ * Handles user signup.
+ * Password is hashed with a unique salt before storing.
+ * @param {Object} req - Express request object containing user details in body.
+ * @param {Object} res - Express response object for sending responses.
+ * @returns {Object} JSON response for success or failure of user signup.
+ */
 async function userSignup(req, res) {
     const { name, email, password } = req.body;
-    const salt = randomBytes(16).toString('hex');
-    const hashedPassword = createHmac('sha256', salt)
+    const salt = randomBytes(16).toString('hex'); // Unique salt for hashing
+    const hashedPassword = createHmac('sha256', salt) // Hashing the password with salt
         .update(password)
         .digest('hex');
 
     try{
+        // Attempt to create a new user
         await User.create({
             name,
             email,
@@ -18,32 +26,42 @@ async function userSignup(req, res) {
 
         return res.status(201).json({ 
             success: true, 
-            message: "user created successfully" 
+            message: "User created successfully" 
         });
     }
     catch(err){
+        // Handling duplicate user (email) error
         if(err.code === 11000 || (err.code === "MongoError" && err.message.includes('duplicate'))){
             return res.status(400).json({ 
                 success: false, 
-                message: "user already exists" 
+                message: "User already exists" 
             });
         }
 
+        // Returning server error for any other errors
         return res.status(500).json({ 
             success: false, 
-            message: "an error occurred while creating user" 
+            message: "An error occurred while creating user" 
         });
     }
 }
 
+/**
+ * Handles user login.
+ * Verifies the hashed password with the stored hash.
+ * @param {Object} req - Express request object containing user email and password in body.
+ * @param {Object} res - Express response object for sending responses.
+ * @returns {Object} JSON response for success or failure of user login.
+ */
 async function userLogin(req, res){
     try{
+        // Attempt to find the user by email and verify password
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-        if(!user) 
+        if(!user) // If user with given email does not exist
             return res.status(404).json({ 
                 success: false, 
-                message: "user not found" 
+                message: "User not found" 
             });
         const salt = user.salt;
         const hashedpassword = user.password;
@@ -52,15 +70,15 @@ async function userLogin(req, res){
             .update(password)
             .digest("hex");
 
-        if(hashedpassword !== userProvidedHash) 
+        if(hashedpassword !== userProvidedHash) // If password does not match
             return res.status(401).json({ 
                 success: false, 
-                message: "password is incorrect" 
+                message: "Password is incorrect" 
             });
 
         return res.status(200).json({ 
             success: true, 
-            message: "user login successfully", 
+            message: "User login successfully", 
             user: {
                 id: user._id,
                 email: user.email
@@ -68,29 +86,38 @@ async function userLogin(req, res){
         });
     }
     catch(err){
+        // Returning server error for any other errors
         return res.status(500).json({ 
             success: false, 
-            message: "an error occurred while logging in" 
+            message: "An error occurred while logging in" 
         });
     }
     
 }
 
+
+/**
+ * Handles user details retrieval.
+ * @param {Object} req - Express request object containing user ID in params.
+ * @param {Object} res - Express response object for sending responses.
+ * @returns {Object} JSON response for success or failure of user details retrieval.
+ */
 async function userDetails(req, res) {
     try{
+        // Attempt to find the user by ID and populate medical history
         const userId = req.params.id;
         const user = await User.findById(userId)?.populate('medicalHistory');
 
-        if(!user){
+        if(!user){ // If user with given ID does not exist
             return res.status(404).json({
                 success: false,
-                message: "user not found"
+                message: "User not found"
             });
         }
 
         return res.status(200).json({
             success: true,
-            message: "user found",
+            message: "User found",
             user: {
                 name: user.name,
                 email: user.email,
@@ -100,11 +127,13 @@ async function userDetails(req, res) {
         });
     }
     catch(err){
+        // Returning server error for any other errors
         return res.status(500).json({ 
             success: false, 
-            message: "an error occurred while getting user details" 
+            message: "An error occurred while getting user details" 
         });
     }
 }
 
+// Exporting the user handling functions for use in other files
 module.exports = { userSignup, userLogin, userDetails };
