@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema({
     aadhaar: {
         type: Number,
         unique: true,
-        sparse: true,
         required: true
     },
     email: {
