@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
         type: Number,
         unique: true,
         sparse: true,
+        required: true
     },
     email: {
         type: String,
