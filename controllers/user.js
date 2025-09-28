@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const { createHmac, randomBytes } = require("crypto");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 /**
  * Handles user signup.
@@ -76,9 +78,16 @@ async function userLogin(req, res){
                 message: "Password is incorrect" 
             });
 
+        const accessToken = jwt.sign(
+            { id: user._id, email: user.email, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
         return res.status(200).json({ 
             success: true, 
             message: "User login successfully", 
+            token: accessToken,
             user: {
                 id: user._id,
                 email: user.email

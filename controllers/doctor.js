@@ -1,6 +1,8 @@
 // Importing required modules
 const Doctor = require("../models/doctor"); // Doctor model
 const { createHmac, randomBytes } = require("crypto"); // Crypto module for hashing and generating random bytes
+const jwt = require("jsonwebtoken"); // JWT for token generation
+require("dotenv").config(); // Load environment variables from .env file
 
 /**
  * Handles doctor signup by creating a new doctor in the database.
@@ -78,9 +80,16 @@ async function doctorLogin(req, res){
                 message:"Password is incorrect"
             });
 
+        const accessToken = jwt.sign(
+            { id: doctor._id, email: doctor.email, role: doctor.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
         return res.status(200).json({
             success: true, 
             message: "Doctor login successfully", 
+            token: accessToken,
             doctor: {
                 id: doctor._id,
                 email: doctor.email

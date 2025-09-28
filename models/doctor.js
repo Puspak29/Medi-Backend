@@ -30,6 +30,8 @@ const doctorSchema = new mongoose.Schema({
     },
     uidByNMC: {
         type: String,
+        unique: true,
+        required: true
     },
     email: {
         type: String,
@@ -45,9 +47,11 @@ const doctorSchema = new mongoose.Schema({
     },
     specialization: {
         type: String,
+        required: true
     },
     experience: {
         type: Number,
+        required: true
     }
 },
 {
