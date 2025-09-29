@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema({
     },
     dateofBirth: {
         type: Date,
+        required: true,
     },
     medicalHistory: [{
         type: mongoose.Schema.Types.ObjectId,
