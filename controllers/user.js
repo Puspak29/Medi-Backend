@@ -146,5 +146,37 @@ async function userDetails(req, res) {
     }
 }
 
+async function getUserProfile(req, res){
+    try{
+        const userId = req.user.id;
+        const user = await User.findById(userId)?.populate('medicalHistory');
+
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User profile fetched successfully",
+            user: {
+                name: user.name,
+                email: user.email,
+                aadhaar: user.aadhaar,
+                dateofBirth: user.dateofBirth ? user.dateofBirth : null,
+                medicalHistory: user.medicalHistory
+            }
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            success: false,
+            message: "An error occured while getting user profile"
+        })
+    }
+}
+
 // Exporting the user handling functions for use in other files
-module.exports = { userSignup, userLogin, userDetails };
+module.exports = { userSignup, userLogin, userDetails, getUserProfile };
