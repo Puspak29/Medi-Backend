@@ -4,9 +4,12 @@ const router = express.Router(); // Creating new router instance
 
 const { userSignup, userLogin } = require("../controllers/user"); // User controller functions
 const { doctorSignup, doctorLogin } = require("../controllers/doctor"); // Doctor controller functions
+const authMiddleware = require("../middleware");
+const checkAuth = require("../controllers/checkAuth");
 
 
 // Setting up routes for user and doctor signup and login
+router.get("/", authMiddleware, checkAuth);
 router.post("/user/signup", userSignup); // User signup route (POST /user/signup)
 router.post("/user/login", userLogin); // User login route (POST /user/login)
 router.post("/doctor/signup", doctorSignup); // Doctor signup route (POST /doctor/signup)

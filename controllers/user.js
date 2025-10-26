@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const { createHmac, randomBytes } = require("crypto");
 const jwt = require("jsonwebtoken");
+const { getUserProfileData } = require("../services/userService")
 require("dotenv").config();
 
 /**
@@ -90,9 +91,11 @@ async function userLogin(req, res){
             success: true, 
             message: "User login successfully", 
             token: accessToken,
-            user: {
+            details: {
                 id: user._id,
-                email: user.email
+                email: user.email,
+                name: user.name,
+                role: user.role
             } 
         });
     }
@@ -106,50 +109,10 @@ async function userLogin(req, res){
     
 }
 
-
-/**
- * Handles user details retrieval.
- * @param {Object} req - Express request object containing user ID in params.
- * @param {Object} res - Express response object for sending responses.
- * @returns {Object} JSON response for success or failure of user details retrieval.
- */
-async function userDetails(req, res) {
-    try{
-        // Attempt to find the user by ID and populate medical history
-        const userId = req.params.id;
-        const user = await User.findById(userId)?.populate('medicalHistory');
-
-        if(!user){ // If user with given ID does not exist
-            return res.status(404).json({
-                success: false,
-                message: "User not found"
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "User found",
-            user: {
-                name: user.name,
-                email: user.email,
-                dateOfBirth: user.dateofBirth ? user.dateofBirth : null,
-                medicalHistory: user.medicalHistory
-            }
-        });
-    }
-    catch(err){
-        // Returning server error for any other errors
-        return res.status(500).json({ 
-            success: false, 
-            message: "An error occurred while getting user details" 
-        });
-    }
-}
-
-async function getUserProfile(req, res){
+async function getUserReportCard(req, res){
     try{
         const userId = req.user.id;
-        const user = await User.findById(userId)?.populate('medicalHistory');
+        const user = await User.findById(userId)?.populate('medicalHistory').select('medicalHistory');
 
         if(!user){
             return res.status(404).json({
@@ -161,13 +124,7 @@ async function getUserProfile(req, res){
         return res.status(200).json({
             success: true,
             message: "User profile fetched successfully",
-            user: {
-                name: user.name,
-                email: user.email,
-                aadhaar: user.aadhaar,
-                dateofBirth: user.dateofBirth ? user.dateofBirth : null,
-                medicalHistory: user.medicalHistory
-            }
+            medicalHistory: user.medicalHistory
         })
     }
     catch(err){
@@ -179,4 +136,4 @@ async function getUserProfile(req, res){
 }
 
 // Exporting the user handling functions for use in other files
-module.exports = { userSignup, userLogin, userDetails, getUserProfile };
+module.exports = { userSignup, userLogin, getUserReportCard };

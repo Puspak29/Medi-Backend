@@ -12,7 +12,7 @@ const { sendOtpEmail, sendSuccessEmail } = require("../services/emailService");
  * @returns {Object} JSON response for success or failure of OTP generation.
  */
 async function generateOtp(req, res){
-    const { userEmail, otpType, description } = req.body;
+    const { doctorId, userEmail, otpType, condition, treatment, description, date, supportingDocument } = req.body;
 
     try{
         // Attempt to find the user by email and generate OTP if user exists then create report card and send email
@@ -28,7 +28,12 @@ async function generateOtp(req, res){
 
         const newReportCard = await ReportCard.create({
             user: user._id,
-            description: description
+            doctor: doctorId,
+            condition: condition,
+            treatment: treatment,
+            description: description,
+            date: date,
+            supportingDocument: supportingDocument
         });
 
         await Otp.create({

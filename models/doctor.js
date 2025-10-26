@@ -52,7 +52,21 @@ const doctorSchema = new mongoose.Schema({
     experience: {
         type: Number,
         required: true
-    }
+    },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    badges: [{
+       badge: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Badge"
+       },
+       earnedAt: {
+        type: Date,
+        default: Date.now
+       }
+    }]
 },
 {
     timestamps: true
