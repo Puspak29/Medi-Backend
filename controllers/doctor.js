@@ -12,7 +12,7 @@ require("dotenv").config(); // Load environment variables from .env file
  * @returns {Object} JSON response for success of failure of doctor signup.
  */
 async function doctorSignup(req, res) {
-    const { name, email, password } = req.body;
+    const { name, email, password, uidByNMC, specialization, experience } = req.body;
     const salt = randomBytes(16).toString('hex'); // Unique salt for hashing
     const hashedPassword = createHmac('sha256', salt) // Hashing the password with salt
         .update(password)
@@ -25,6 +25,9 @@ async function doctorSignup(req, res) {
             email,
             salt: salt,
             password: hashedPassword,
+            uidByNMC,
+            specialization,
+            experience
         });  
 
         return res.status(201).json({ 
@@ -90,9 +93,11 @@ async function doctorLogin(req, res){
             success: true, 
             message: "Doctor login successfully", 
             token: accessToken,
-            doctor: {
+            details: {
                 id: doctor._id,
-                email: doctor.email
+                email: doctor.email,
+                name: doctor.name,
+                role: doctor.role
             }
         });
     }
@@ -105,5 +110,37 @@ async function doctorLogin(req, res){
     }
 }
 
+async function getDoctorProfile(req, res){
+    try{
+        const doctorId = req.user.id;
+        const doctor = await Doctor.findById(doctorId);
+
+        if(!doctor){
+            return res.status(404).json({
+                success: false,
+                message: "Doctor not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Doctor profile fetched successfully",
+            doctor: {
+                name: doctor.name,
+                email: doctor.email,
+                uidByNMC: doctor.uidByNMC,
+                specialization: doctor.specialization,
+                experience: doctor.experience
+            }
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            success: false,
+            message: "An error occured while getting doctor profile"
+        })
+    }
+}
+
 // Exporting the doctor signup and login functions for use in other files
-module.exports = { doctorSignup, doctorLogin };
+module.exports = { doctorSignup, doctorLogin, getDoctorProfile };
