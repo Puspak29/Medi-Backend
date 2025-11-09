@@ -1,17 +1,40 @@
 const User = require("../models/user");
+const Doctor = require("../models/doctor");
 
 async function getUserProfileData(userId) {
-    const user = await User.findById(userId).select('-password -salt');
+    const user = await User.findById(userId)
+      .select('-password -salt')
+      .populate({
+        path: 'medicalHistory',
+        options: { sort: { createdAt: -1 }, limit: 3 },
+      });
     if (!user) throw new Error('User not found');
 
-    const medicalHistoryCount = user.medicalHistory.length;
-    const latestMedicalHistory = await User.findById(userId).populate({
-        path: 'medicalHistory',
-        options: { sort: { createdAt: -1 }, 
-        limit: 3 
-        }
-    }).select('medicalHistory -_id');
-    return { user, medicalHistoryCount, latestMedicalHistory };
+    const medicalHistory = Array.isArray(user.medicalHistory)
+      ? user.medicalHistory
+      : [];
+
+    const medicalHistoryCount = medicalHistory.length;
+
+    if (medicalHistoryCount === 0) {
+      return {
+        user,
+        medicalHistoryCount,
+        latestMedicalHistory: null,
+        lastDoctor: null,
+        };
+    }
+
+    const lastDoctorId = medicalHistory[0]?.doctor || null;
+    const lastDoctor = lastDoctorId
+      ? await Doctor.findById(lastDoctorId).select('name specialization')
+      : null;
+    return {
+      user,
+      medicalHistoryCount,
+      latestMedicalHistory: medicalHistory,
+      lastDoctor,
+    };
 }
 
 module.exports = { getUserProfileData };

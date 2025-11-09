@@ -112,7 +112,10 @@ async function userLogin(req, res){
 async function getUserReportCard(req, res){
     try{
         const userId = req.user.id;
-        const user = await User.findById(userId)?.populate('medicalHistory').select('medicalHistory');
+        const user = await User.findById(userId)?.populate({
+            path: 'medicalHistory',
+            options: { sort: { createdAt: -1 }}
+        }).select('medicalHistory');
 
         if(!user){
             return res.status(404).json({

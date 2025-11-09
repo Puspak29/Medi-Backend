@@ -41,6 +41,11 @@ const reportCardSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    status: {
+        type: String,
+        enum: ["Normal", "Critical", "Attention Needed", "Under Review"],
+        default: "Normal"
+    },
     supportingDocument: {
         type: String,
     },
