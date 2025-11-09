@@ -12,7 +12,17 @@ const { sendOtpEmail, sendSuccessEmail } = require("../services/emailService");
  * @returns {Object} JSON response for success or failure of OTP generation.
  */
 async function generateOtp(req, res){
-    const { doctorId, userEmail, otpType, condition, treatment, description, date, supportingDocument } = req.body;
+    const { 
+        doctorId, 
+        userEmail, 
+        otpType, 
+        condition, 
+        treatment, 
+        description, 
+        date, 
+        status,
+        supportingDocument 
+    } = req.body;
 
     try{
         // Attempt to find the user by email and generate OTP if user exists then create report card and send email
@@ -33,6 +43,7 @@ async function generateOtp(req, res){
             treatment: treatment,
             description: description,
             date: date,
+            status: status,
             supportingDocument: supportingDocument
         });
 
@@ -118,6 +129,10 @@ async function verifyOtp(req, res){
             message: "An error occurred while verifying OTP"
         });
     }
+}
+
+async function getReportCard(req, res){
+
 }
 
 // Exporting the OTP generation and verification functions for use in other files

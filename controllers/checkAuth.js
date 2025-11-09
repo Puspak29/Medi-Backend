@@ -17,7 +17,9 @@ async function checkAuth(req, res){
                     aadhaar: user.user.aadhaar,
                     dateofBirth: user.user.dateofBirth,
                     medicalHistoryCount: user.medicalHistoryCount,
-                    latestMedicalHistory: user.latestMedicalHistory
+                    latestMedicalHistory: user.latestMedicalHistory || [],
+                    createdAt: user.user.createdAt,
+                    lastDoctor: user.lastDoctor
                 }
             });
         }
