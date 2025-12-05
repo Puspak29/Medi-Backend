@@ -142,5 +142,33 @@ async function getDoctorProfile(req, res){
     }
 }
 
+async function searchDoctors(req, res){
+    try{
+        const q = req.query.q?.trim() || '';
+        if(!q || q.length === 0){
+            return res.status(400).json({
+                success: false,
+                message: "No search query provided"
+            })
+        }
+
+        const doctors = await Doctor.find({
+            name: { $regex: q, $options: 'i' } // Case-insensitive search by name
+        }).select('name specialization');
+
+        return res.status(200).json({
+            success: true,
+            message: "Doctors fetched successfully",
+            doctors: doctors
+        });
+    }
+    catch(err){
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while searching for doctors"
+        });
+    }
+}
+
 // Exporting the doctor signup and login functions for use in other files
-module.exports = { doctorSignup, doctorLogin, getDoctorProfile };
+module.exports = { doctorSignup, doctorLogin, getDoctorProfile, searchDoctors };

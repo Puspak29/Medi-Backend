@@ -2,6 +2,10 @@ const User = require("../models/user");
 const Doctor = require("../models/doctor");
 
 async function getUserProfileData(userId) {
+    const raw = await User.findById(userId).select("medicalHistory");
+    if (!raw) throw new Error("User not found");
+    const totalCount = raw.medicalHistory.length;
+
     const user = await User.findById(userId)
       .select('-password -salt')
       .populate({
@@ -14,7 +18,7 @@ async function getUserProfileData(userId) {
       ? user.medicalHistory
       : [];
 
-    const medicalHistoryCount = medicalHistory.length;
+    const medicalHistoryCount = totalCount;
 
     if (medicalHistoryCount === 0) {
       return {
