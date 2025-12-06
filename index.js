@@ -32,6 +32,6 @@ app.use(routes);
 
 
 // Starting the server and listening on specified port
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server started at http://localhost:${PORT}`);
 });

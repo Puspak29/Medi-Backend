@@ -1,4 +1,5 @@
-const { getUserProfileData } = require('../services/userService')
+const { getDoctorProfileData } = require('../services/doctorService');
+const { getUserProfileData } = require('../services/userService');
 
 async function checkAuth(req, res){
     try{
@@ -24,17 +25,28 @@ async function checkAuth(req, res){
             });
         }
 
+        const doctor = await getDoctorProfileData(id);
         return res.status(200).json({
             success: true,
             message: "Authentication valid",
             details: {
                 id,
                 email,
-                role
+                role,
+                name: doctor.doctor.name,
+                specialization: doctor.doctor.specialization,
+                experience: doctor.doctor.experience,
+                uidByNMC: doctor.doctor.uidByNMC,
+                patientCount: doctor.patientCount,
+                rating: doctor.doctor.rating,
+                createdAt: doctor.doctor.createdAt,
+                lastPatient: doctor.lastPatient,
+                latestMedicalHistory: doctor.latestMedicalHistory || []
             }
         })
     }
     catch(err){
+        console.error("Error in checkAuth:", err);
         return res.status(500).json({
             success: false,
             message: "An error occured while checking authentication"
