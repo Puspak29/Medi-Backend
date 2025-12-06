@@ -1,10 +1,23 @@
-const Doctor = require("../models/user");
+const Doctor = require("../models/doctor");
 const Badge = require("../models/badges");
+const ReportCard = require("../models/reportcard");
+const User = require("../models/user");
 
 async function getDoctorProfileData(doctorId) {
-    const doctor = await Doctor.findById(doctorId).select('-password -salt');
+    const doctor = await Doctor.findById(doctorId).select('-password -salt -badges');
     if(!doctor) throw new Error('Doctor not found');
-    return doctor;
+
+    const patients = await ReportCard.distinct('user', { doctor: doctorId });
+    const patientCount = patients.length;
+    const doc = await ReportCard.find({ doctor: doctorId }).sort({ createdAt: -1 }).limit(3);
+
+    const lastPatient = doc ? await User.findById(doc[0]?.user).select('name') : null;
+    return { 
+        doctor, 
+        patientCount, 
+        lastPatient ,
+        latestMedicalHistory: doc ? doc : []
+    };
 }
 
 async function badgeAssignment(doctorId){
