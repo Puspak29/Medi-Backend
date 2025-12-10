@@ -4,10 +4,12 @@ const router = express.Router(); // Creating new router instance
 const middleware = require("../middleware");
 
 const { getDoctorProfile } = require("../controllers/doctor"); // User controller functions
-const { createAppointment } = require("../controllers/appointment");
+const { createAppointment, getDoctorAppointments, getAppointedUsers } = require("../controllers/appointment");
 
 router.get("/doctor/profile", middleware, getDoctorProfile);
-router.post("/doctor/appointments/create", middleware, createAppointment);
+router.post("/doctor/appointments", middleware, createAppointment);
+router.get("/doctor/appointments", middleware, getDoctorAppointments);
+router.get("/doctor/appointments/view", middleware, getAppointedUsers);
 
 // Exporting the router for use in other files
 module.exports = router;
