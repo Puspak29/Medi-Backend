@@ -20,11 +20,10 @@ async function sendOtpEmail(to, otp){
     try{
         // Attempt to send the email
         await transporter.sendMail(mailOptions);
-        console.log("Email sent successfully");
     }
     catch(err){
         // Log any errors during email sending
-        console.error("Error sending email:", err);
+        throw new Error("Error sending email:", err);
     }
 }
 
@@ -45,11 +44,10 @@ async function sendSuccessEmail(to, message){
     try{
         // Attempt to send the email
         await transporter.sendMail(mailOptions);
-        console.log("Email sent successfully");
     }
     catch(err){
         // Log any errors during email sending
-        console.error("Error sending email:", err);
+        throw new Error("Error sending email:", err);
     }
 }
 
