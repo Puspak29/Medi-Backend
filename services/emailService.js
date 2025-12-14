@@ -1,7 +1,6 @@
-// Importing require modules
-const transporter = require("../config/gmail"); // Gmail transporter configuration
+const transporter = require("../config/gmail");
 
-require("dotenv").config(); // Load environment variable from .env
+require("dotenv").config();
 
 /**
  * Asynchronously sends an OTP email to the specified recipient.
@@ -9,7 +8,6 @@ require("dotenv").config(); // Load environment variable from .env
  * @param {string} otp - The OTP to be sent.
  */
 async function sendOtpEmail(to, otp){
-    // Email options
     const mailOptions = {
         from: `"Your OTP" <${process.env.GMAIL_USER}>`,
         to,
@@ -18,12 +16,10 @@ async function sendOtpEmail(to, otp){
     }
 
     try{
-        // Attempt to send the email
         await transporter.sendMail(mailOptions);
     }
     catch(err){
-        // Log any errors during email sending
-        throw new Error("Error sending email:", err);
+        console.error("Error sending email:", err);
     }
 }
 
@@ -42,16 +38,13 @@ async function sendSuccessEmail(to, message){
     }
 
     try{
-        // Attempt to send the email
         await transporter.sendMail(mailOptions);
     }
     catch(err){
-        // Log any errors during email sending
-        throw new Error("Error sending email:", err);
+        console.error("Error sending email:", err);
     }
 }
 
-// Exporting the email sending functions for use in other files
 module.exports = {
     sendOtpEmail,
     sendSuccessEmail,

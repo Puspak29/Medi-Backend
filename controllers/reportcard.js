@@ -131,12 +131,78 @@ async function verifyOtp(req, res){
     }
 }
 
-async function getReportCard(req, res){
+async function viewReportCard(req, res){
+    try{
+        const userId = req.user.id;
+        const role = req.user.role;
+        const reportId = req.query.reportId;
+        let doc;
 
+        if(role === 'user'){
+            doc = await ReportCard.findOne({ _id: reportId, user: userId })
+            .populate('user', '_id name dateofBirth phoneNumber')
+            .populate('doctor', '_id name specialization phoneNumber')
+            .lean();
+            
+            if(!doc){
+                return res.status(404).json({
+                    success: false,
+                    message: "Report card not found."
+                });
+            }
+        }
+        else{
+            doc = await ReportCard.findOne({ _id: reportId, doctor: userId })
+            .populate('user', '_id name dateofBirth phoneNumber')
+            .populate('doctor', '_id name specialization phoneNumber')
+            .lean();
+            if(!doc){
+                return res.status(404).json({
+                    success: false,
+                    message: "Report card not found."
+                });
+            }
+        }
+
+
+        const reportData = {
+            _id: doc._id,
+            user: {
+                _id: doc.user._id,
+                name: doc.user.name,
+                dob: doc.user.dateofBirth,
+                phoneNumner: doc.user.phoneNumber,                    
+            },
+            doctor: {
+                _id: doc.doctor._id,
+                name: doc.doctor.name,
+                specialization: doc.doctor.specialization,
+                phoneNumber: doc.doctor.phoneNumber,
+            },
+            condition: doc.condition,
+            description: doc.description,
+            treatment: doc.treatment,
+            date: doc.date,
+            status: doc.status,
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Report card fetched successfully",
+            reportCard: reportData
+        });
+    }
+    catch(err){
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while fetching report card"
+        })
+    }
 }
 
 // Exporting the OTP generation and verification functions for use in other files
 module.exports = {
     generateOtp,
-    verifyOtp
+    verifyOtp,
+    viewReportCard
 }

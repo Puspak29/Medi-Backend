@@ -33,6 +33,11 @@ const doctorSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    phoneNumber: {
+        type: String,
+        unique: true,
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -52,6 +57,9 @@ const doctorSchema = new mongoose.Schema({
     experience: {
         type: Number,
         required: true
+    },
+    address: {
+        type: String,
     },
     rating: {
         type: Number,

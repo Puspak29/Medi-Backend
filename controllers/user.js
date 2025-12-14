@@ -12,7 +12,7 @@ require("dotenv").config();
  * @returns {Object} JSON response for success or failure of user signup.
  */
 async function userSignup(req, res) {
-    const { name, email, password, dateofBirth, aadhaar } = req.body;
+    const { name, email, password, dateofBirth, phoneNumber, address } = req.body;
     const salt = randomBytes(16).toString('hex'); // Unique salt for hashing
     const hashedPassword = createHmac('sha256', salt) // Hashing the password with salt
         .update(password)
@@ -22,11 +22,12 @@ async function userSignup(req, res) {
         // Attempt to create a new user
         await User.create({
             name,
-            aadhaar,
+            phoneNumber,
             email,
             salt: salt,
             password: hashedPassword,
             dateofBirth,
+            address
         }); 
 
         return res.status(201).json({ 
