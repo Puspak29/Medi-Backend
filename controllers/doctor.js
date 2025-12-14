@@ -12,7 +12,7 @@ require("dotenv").config(); // Load environment variables from .env file
  * @returns {Object} JSON response for success of failure of doctor signup.
  */
 async function doctorSignup(req, res) {
-    const { name, email, password, uidByNMC, specialization, experience } = req.body;
+    const { name, email, password, uidByNMC, phoneNumber, specialization, experience, address } = req.body;
     const salt = randomBytes(16).toString('hex'); // Unique salt for hashing
     const hashedPassword = createHmac('sha256', salt) // Hashing the password with salt
         .update(password)
@@ -26,8 +26,10 @@ async function doctorSignup(req, res) {
             salt: salt,
             password: hashedPassword,
             uidByNMC,
+            phoneNumber,
             specialization,
-            experience
+            experience,
+            address
         });  
 
         return res.status(201).json({ 
@@ -128,6 +130,7 @@ async function getDoctorProfile(req, res){
             doctor: {
                 name: doctor.name,
                 email: doctor.email,
+                phoneNumber: doctor.phoneNumber,
                 uidByNMC: doctor.uidByNMC,
                 specialization: doctor.specialization,
                 experience: doctor.experience
@@ -154,7 +157,7 @@ async function searchDoctors(req, res){
 
         const doctors = await Doctor.find({
             name: { $regex: q, $options: 'i' } // Case-insensitive search by name
-        }).select('name specialization');
+        }).select('name specialization address');
 
         return res.status(200).json({
             success: true,

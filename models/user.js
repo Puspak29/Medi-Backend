@@ -28,8 +28,8 @@ const userSchema = new mongoose.Schema({
         default: "user",
         immutable: true,
     },
-    aadhaar: {
-        type: Number,
+    phoneNumber: {
+        type: String,
         unique: true,
         required: true
     },
@@ -48,6 +48,9 @@ const userSchema = new mongoose.Schema({
     dateofBirth: {
         type: Date,
         required: true,
+    },
+    address: {
+        type: String,
     },
     medicalHistory: [{
         type: mongoose.Schema.Types.ObjectId,

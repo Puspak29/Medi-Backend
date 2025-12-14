@@ -15,7 +15,7 @@ async function checkAuth(req, res){
                     email,
                     role,
                     name: user.user.name,
-                    aadhaar: user.user.aadhaar,
+                    phoneNumber: user.user.phoneNumber,
                     dateofBirth: user.user.dateofBirth,
                     medicalHistoryCount: user.medicalHistoryCount,
                     latestMedicalHistory: user.latestMedicalHistory || [],
@@ -37,6 +37,7 @@ async function checkAuth(req, res){
                 specialization: doctor.doctor.specialization,
                 experience: doctor.doctor.experience,
                 uidByNMC: doctor.doctor.uidByNMC,
+                phoneNumber: doctor.doctor.phoneNumber,
                 patientCount: doctor.patientCount,
                 rating: doctor.doctor.rating,
                 createdAt: doctor.doctor.createdAt,
@@ -46,7 +47,6 @@ async function checkAuth(req, res){
         })
     }
     catch(err){
-        console.error("Error in checkAuth:", err);
         return res.status(500).json({
             success: false,
             message: "An error occured while checking authentication"

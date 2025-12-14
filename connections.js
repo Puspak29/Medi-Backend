@@ -1,5 +1,4 @@
-// Importing required modules
-const mongoose = require("mongoose"); // Mongoose for MongoDB connection
+const mongoose = require("mongoose");
 
 /**
  * Asynchronously connects to MongoDB using provided connection URL.
@@ -7,18 +6,15 @@ const mongoose = require("mongoose"); // Mongoose for MongoDB connection
  */
 const connectMongo = async (url) => {
     try {
-        // Attempt to connect to MongoDB
         await mongoose.connect(url);
-        console.log("MongoDB connected successfully");    
+        console.log("MongoDB connected");    
     }
     catch (err){
-        // Log any connection errors
         console.error("Error connecting MongoDB: ", err);
         process.exit(1); // Exit process with failure
     }
 }
 
-// Exporting the connectMongo function for use in other files
 module.exports = {
     connectMongo
 }

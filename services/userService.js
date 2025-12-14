@@ -3,7 +3,7 @@ const Doctor = require("../models/doctor");
 
 async function getUserProfileData(userId) {
     const raw = await User.findById(userId).select("medicalHistory");
-    if (!raw) throw new Error("User not found");
+    if (!raw) return null;
     const totalCount = raw.medicalHistory.length;
 
     const user = await User.findById(userId)
@@ -12,7 +12,7 @@ async function getUserProfileData(userId) {
         path: 'medicalHistory',
         options: { sort: { createdAt: -1 }, limit: 3 },
       });
-    if (!user) throw new Error('User not found');
+    if (!user) return null;
 
     const medicalHistory = Array.isArray(user.medicalHistory)
       ? user.medicalHistory

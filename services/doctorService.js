@@ -5,7 +5,7 @@ const User = require("../models/user");
 
 async function getDoctorProfileData(doctorId) {
     const doctor = await Doctor.findById(doctorId).select('-password -salt -badges');
-    if(!doctor) throw new Error('Doctor not found');
+    if(!doctor) return null;
 
     const patients = await ReportCard.distinct('user', { doctor: doctorId });
     const patientCount = patients.length;
@@ -22,7 +22,7 @@ async function getDoctorProfileData(doctorId) {
 
 async function badgeAssignment(doctorId){
     const doctor = await Doctor.findById(doctorId).populate('badges.badge').select('-password -salt');
-    if(!doctor) throw new Error('Doctor not found');
+    if(!doctor) return null;
 
     const allBadges = await Badge.find();
 
