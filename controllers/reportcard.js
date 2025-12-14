@@ -171,7 +171,7 @@ async function viewReportCard(req, res){
                 _id: doc.user._id,
                 name: doc.user.name,
                 dob: doc.user.dateofBirth,
-                phoneNumner: doc.user.phoneNumber,                    
+                phoneNumber: doc.user.phoneNumber,                    
             },
             doctor: {
                 _id: doc.doctor._id,
