@@ -82,7 +82,7 @@ async function bookSlot(req, res){
                 message: "This slot is fully booked"
             });
         }
-        if(slot.users.includes(userId)){
+        if(slot.users.some(u => u.user.toString() === userId.toString())){
             return res.status(400).json({
                 success: false,
                 message: "User has already booked this slot"

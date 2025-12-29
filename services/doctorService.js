@@ -7,9 +7,9 @@ async function getDoctorProfileData(doctorId) {
     const doctor = await Doctor.findById(doctorId).select('-password -salt -badges');
     if(!doctor) return null;
 
-    const patients = await ReportCard.distinct('user', { doctor: doctorId });
+    const patients = await ReportCard.distinct('user', { doctor: doctorId, isVerified: true });
     const patientCount = patients.length;
-    const doc = await ReportCard.find({ doctor: doctorId }).sort({ createdAt: -1 }).limit(3);
+    const doc = await ReportCard.find({ doctor: doctorId, isVerified: true }).sort({ createdAt: -1 }).limit(3);
 
     const lastPatient = doc ? await User.findById(doc[0]?.user).select('name') : null;
     return { 

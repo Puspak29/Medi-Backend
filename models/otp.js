@@ -39,6 +39,8 @@ const otpSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "ReportCard"
     }
+},{
+    timestamps: true,
 });
 
 // Index to automatically delete expired OTPs
