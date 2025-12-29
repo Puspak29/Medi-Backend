@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Doctor = require("../models/doctor");
+const Otp = require("../models/otp");
 
 async function getUserProfileData(userId) {
     const raw = await User.findById(userId).select("medicalHistory");
@@ -33,11 +34,14 @@ async function getUserProfileData(userId) {
     const lastDoctor = lastDoctorId
       ? await Doctor.findById(lastDoctorId).select('name specialization')
       : null;
+
+    const otps = await Otp.find({ userEmail: user.email }).sort({ createdAt: -1 }).select('-updatedData -updateDataId');
     return {
       user,
       medicalHistoryCount,
       latestMedicalHistory: medicalHistory,
       lastDoctor,
+      otps,
     };
 }
 

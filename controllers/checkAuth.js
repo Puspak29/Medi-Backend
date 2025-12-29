@@ -21,7 +21,8 @@ async function checkAuth(req, res){
                     medicalHistoryCount: user.medicalHistoryCount,
                     latestMedicalHistory: user.latestMedicalHistory || [],
                     createdAt: user.user.createdAt,
-                    lastDoctor: user.lastDoctor
+                    lastDoctor: user.lastDoctor,
+                    notification: user.otps || []
                 }
             });
         }
