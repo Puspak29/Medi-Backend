@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router(); 
 const middleware = require("../middleware");
 
-const { getUserReportCard } = require("../controllers/user");
+const { getUserReportCard, updateUserProfile } = require("../controllers/user");
 const { searchDoctors } = require("../controllers/doctor");
 const { bookSlot, getAvailableSlots, getUserAppointments } = require("../controllers/appointment");
 const { viewReportCard } = require("../controllers/reportcard");
@@ -13,5 +13,6 @@ router.get("/user/appointments/search", middleware, searchDoctors); // Route to 
 router.post("/user/appointments/book", middleware, bookSlot);
 router.get("/user/appointments/book", middleware, getAvailableSlots);
 router.get("/user/viewreport", middleware, viewReportCard);
+router.post("/user/profile/update", middleware, updateUserProfile);
 
 module.exports = router;
