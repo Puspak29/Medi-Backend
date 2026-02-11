@@ -49,13 +49,42 @@ const userSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    bloodType: {
+        type: String,
+        enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "N/A"],
+        default: "N/A"
+    },
+    height: {
+        type: Number,
+        min: 0
+    },
+    weight: {
+        type: Number,
+        min: 0
+    },
     address: {
         type: String,
     },
     medicalHistory: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "ReportCard"
-    }]
+    }],
+    emergencyProtocol: {
+        criticalAllergies: {
+            type: String,
+            default: ""
+        },
+        emergencyContact: {
+            name: {
+                type: String,
+                default: ""
+            },
+            phoneNumber: {
+                type: String,
+                default: ""
+            }
+        }
+    }
 },
 {
     timestamps: true

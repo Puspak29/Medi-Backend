@@ -36,6 +36,7 @@ async function getUserProfileData(userId) {
       : null;
 
     const otps = await Otp.find({ userEmail: user.email }).sort({ createdAt: -1 }).select('-updatedData -updateDataId');
+    console.log(user);
     return {
       user,
       medicalHistoryCount,

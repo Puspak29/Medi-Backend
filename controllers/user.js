@@ -139,5 +139,38 @@ async function getUserReportCard(req, res){
     }
 }
 
+async function updateUserProfile(req, res){
+    try{
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        const { bloodType, height, weight, address, emergencyProtocol } = req.body;
+
+        user.bloodType = bloodType || user.bloodType;
+        user.height = height || user.height;
+        user.weight = weight || user.weight;
+        user.address = address || user.address;
+        user.emergencyProtocol = emergencyProtocol || user.emergencyProtocol;
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "User profile updated successfully"
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            success: false,
+            message: "An error occured while updating profile"
+        })
+    }
+}
+
 // Exporting the user handling functions for use in other files
-module.exports = { userSignup, userLogin, getUserReportCard };
+module.exports = { userSignup, userLogin, getUserReportCard, updateUserProfile };

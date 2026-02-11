@@ -22,7 +22,11 @@ async function checkAuth(req, res){
                     latestMedicalHistory: user.latestMedicalHistory || [],
                     createdAt: user.user.createdAt,
                     lastDoctor: user.lastDoctor,
-                    notification: user.otps || []
+                    notification: user.otps || [],
+                    bloodType: user.user.bloodType,
+                    height: user.user.height,
+                    weight: user.user.weight,
+                    emergencyProtocol: user.user.emergencyProtocol
                 }
             });
         }
