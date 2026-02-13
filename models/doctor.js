@@ -58,10 +58,24 @@ const doctorSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    hospitalAffiliation: {
+        type: String,
+    },
+    bio: {
+        type: String,
+    },
     address: {
         type: String,
     },
     rating: {
+        type: Number,
+        default: 0
+    },
+    totalReviews: {
+        type: Number,
+        default: 0
+    },
+    reviewCounts: {
         type: Number,
         default: 0
     },

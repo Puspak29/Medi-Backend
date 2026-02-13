@@ -32,6 +32,7 @@ async function checkAuth(req, res){
         }
 
         const doctor = await getDoctorProfileData(id);
+        const additionalExp = new Date().getFullYear() - doctor.doctor.createdAt.getFullYear();
         return res.status(200).json({
             success: true,
             message: "Authentication valid",
@@ -41,7 +42,7 @@ async function checkAuth(req, res){
                 role,
                 name: doctor.doctor.name,
                 specialization: doctor.doctor.specialization,
-                experience: doctor.doctor.experience,
+                experience: doctor.doctor.experience + additionalExp,
                 uidByNMC: doctor.doctor.uidByNMC,
                 phoneNumber: doctor.doctor.phoneNumber,
                 address: doctor.doctor.address,
@@ -49,7 +50,10 @@ async function checkAuth(req, res){
                 rating: doctor.doctor.rating,
                 createdAt: doctor.doctor.createdAt,
                 lastPatient: doctor.lastPatient,
-                latestMedicalHistory: doctor.latestMedicalHistory || []
+                latestMedicalHistory: doctor.latestMedicalHistory || [],
+                hospitalAffiliation: doctor.doctor.hospitalAffiliation,
+                bio: doctor.doctor.bio,
+                badges: doctor.doctor.badges || []
             }
         })
     }
