@@ -112,39 +112,6 @@ async function doctorLogin(req, res){
     }
 }
 
-async function getDoctorProfile(req, res){
-    try{
-        const doctorId = req.user.id;
-        const doctor = await Doctor.findById(doctorId);
-
-        if(!doctor){
-            return res.status(404).json({
-                success: false,
-                message: "Doctor not found"
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Doctor profile fetched successfully",
-            doctor: {
-                name: doctor.name,
-                email: doctor.email,
-                phoneNumber: doctor.phoneNumber,
-                uidByNMC: doctor.uidByNMC,
-                specialization: doctor.specialization,
-                experience: doctor.experience
-            }
-        })
-    }
-    catch(err){
-        return res.status(500).json({
-            success: false,
-            message: "An error occured while getting doctor profile"
-        })
-    }
-}
-
 async function searchDoctors(req, res){
     try{
         const q = req.query.q?.trim() || '';
@@ -173,5 +140,44 @@ async function searchDoctors(req, res){
     }
 }
 
+async function updateDoctorProfile(req, res){
+    try{
+        const doctorId = req.user.id;
+        const role = req.user.role;
+        if(role !== 'doctor'){
+            return res.status(403).json({
+                success: false,
+                message: "Only doctors can update their profile"
+            });
+        }
+        const doctor = await Doctor.findById(doctorId);
+        if(!doctor){
+            return res.status(404).json({
+                success: false,
+                message: "Doctor not found"
+            });
+        }
+        const { hospitalAffiliation, specialization, phoneNumber, address, bio } = req.body;
+
+        doctor.hospitalAffiliation = hospitalAffiliation || doctor.hospitalAffiliation;
+        doctor.specialization = specialization || doctor.specialization;
+        doctor.phoneNumber = phoneNumber || doctor.phoneNumber;
+        doctor.address = address || doctor.address;
+        doctor.bio = bio || doctor.bio;
+        await doctor.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Doctor profile updated successfully"
+        });
+    }
+    catch(err){
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while updating doctor profile"
+        });
+    }
+}
+
 // Exporting the doctor signup and login functions for use in other files
-module.exports = { doctorSignup, doctorLogin, getDoctorProfile, searchDoctors };
+module.exports = { doctorSignup, doctorLogin, searchDoctors, updateDoctorProfile };
