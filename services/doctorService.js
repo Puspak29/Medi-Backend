@@ -25,8 +25,16 @@ async function getDoctorProfileData(doctorId) {
 
 async function badgeAssignment(doctor){
     const badges = await Badge.find();
+    let value;
     for(const badge of badges){
-        if(doctor[badge.conditionType] >= badge.threshold && !doctor.badges.some(b => b.badge._id.equals(badge._id))){
+        if(badge.conditionType === 'experience'){
+            const additionalExp = new Date().getFullYear() - doctor.createdAt.getFullYear();
+            value = doctor.experience + additionalExp;
+        }
+        else{
+            value = doctor[badge.conditionType] || 0;
+        }
+        if(value >= badge.threshold && !doctor.badges.some(b => b.badge._id.equals(badge._id))){
             doctor.badges.push({ badge: badge._id, earnedAt: new Date() });
         }
     }
