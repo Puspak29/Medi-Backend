@@ -12,6 +12,13 @@ router.get("/", (req, res) => {
     res.send("Welcome to the SERVER!");
 });
 
+router.get("/api/health", (req, res) => {
+    res.status(200).json({
+        status: "OK",
+        message: "Server is running smoothly!"
+    });
+});
+
 router.use("/api/auth", authRouter); // Using auth routes for /api/auth
 router.use("/api", reportCardRouter); // Using report card routes for /api
 router.use("/api", userRouter); // Using user routes for /api
